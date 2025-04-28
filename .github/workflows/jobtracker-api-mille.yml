@@ -1,8 +1,9 @@
 name: Build and deploy .NET Core application to Web App jobtracker-api-mille
 on:
-  push:
-    branches:
-    - main
+  #push:
+  #  branches:
+  #  - main
+  workflow_dispatch:
 env:
   AZURE_WEBAPP_NAME: jobtracker-api-mille
   AZURE_WEBAPP_PACKAGE_PATH: .\publish
