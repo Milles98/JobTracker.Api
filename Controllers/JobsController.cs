@@ -35,6 +35,7 @@ public class JobsController(AppDbContext db) : ControllerBase
             Title = request.Title,
             ApplicationDate = DateTime.UtcNow,
             Status = "Skickat",
+            Url = request.Url,
             Notes = request.Notes
         };
 
@@ -50,6 +51,7 @@ public class JobsController(AppDbContext db) : ControllerBase
         if (job is null) return NotFound();
 
         job.Status = request.Status;
+        job.Url = request.Url;
         job.Notes = request.Notes;
         await db.SaveChangesAsync();
         return NoContent();

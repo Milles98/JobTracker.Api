@@ -8,4 +8,5 @@ public class JobApplication
     public DateTime ApplicationDate { get; set; }
     public string Status { get; set; } = "Sent";
     public string? Notes { get; set; }
+    public string? Url { get; set; }
 }
