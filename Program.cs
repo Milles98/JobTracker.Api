@@ -16,7 +16,9 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://thankful-glacier-0167d7003.6.azurestaticapps.net")
+        policy.WithOrigins(
+            "https://thankful-glacier-0167d7003.6.azurestaticapps.net",
+            "https://jobtrackerclient-bxd7bvb0fhe7aag4.northeurope-01.azurewebsites.net")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
