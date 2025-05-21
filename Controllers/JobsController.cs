@@ -10,6 +10,12 @@ namespace JobTracker.Api.Controllers;
 [ApiController]
 public class JobsController(AppDbContext db) : ControllerBase
 {
+    [HttpOptions]
+    public IActionResult Options()
+    {
+        return Ok();
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<JobApplication>>> GetAll()
     {
