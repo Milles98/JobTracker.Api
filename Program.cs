@@ -3,19 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string FrontendOrigin =
-    "https://jobtrackerclient-bxd7bvb0fhe7aag4.northeurope-01.azurewebsites.net";
-
-builder.Services.AddCors(opt =>
+builder.Services.AddCors(options =>
 {
-    opt.AddPolicy("AllowFrontend", p => p
-    .WithOrigins(
-        "https://jobtrackerclient-bxd7bvb0fhe7aag4.northeurope-01.azurewebsites.net",
-        "https://localhost:5002", // lägg till denna rad
-        "http://localhost:5002"   // och denna också för HTTP fallback
-    )
-    .AllowAnyHeader()
-    .AllowAnyMethod());
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins(
+                "https://jobtrackerclient-bxd7bvb0fhe7aag4.northeurope-01.azurewebsites.net",
+                "https://localhost:5002",
+                "http://localhost:5002")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); 
+    });
 });
 
 builder.Services.AddControllers();
@@ -27,26 +26,30 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-app.UseCors("AllowFrontend");
+app.UseCors("AllowFrontend"); 
 
 if (app.Environment.IsDevelopment())
-    app.UseDeveloperExceptionPage();
-
-app.UseHttpsRedirection();  
-app.UseAuthentication();    
-app.UseAuthorization();
-
-app.UseSwagger();
-app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "JobTracker API v1");
-    c.RoutePrefix = string.Empty;
-});
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "JobTracker API v1");
+        c.RoutePrefix = string.Empty;
+    });
+}
+
+app.UseHttpsRedirection();
+app.UseRouting(); 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
-    if (ctx.Request.Headers.TryGetValue("Origin", out var origin))
-        app.Logger.LogInformation("Origin: {Origin}", origin);
+    if (ctx.Request.Method == "OPTIONS")
+    {
+        app.Logger.LogInformation("Handling OPTIONS request from {Origin}", ctx.Request.Headers["Origin"]);
+    }
     await next();
 });
 
